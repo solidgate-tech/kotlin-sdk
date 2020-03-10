@@ -1,66 +1,48 @@
 package com.solidgate.api
 
-import com.google.gson.Gson
 import io.ktor.client.HttpClient
 import io.ktor.client.request.post
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.Url
-import javax.crypto.Mac
-import javax.crypto.spec.SecretKeySpec
-import org.apache.commons.codec.binary.Base64
-import org.apache.commons.codec.binary.Hex
 
-data class Credentials(val merchantId: String, val privateKey: String)
-data class Endpoints(
-    val baseSolidGateApiUriString: String = Api.BASE_SOLID_GATE_API_URI,
-    val baseReconciliationsApiUriString: String = Api.BASE_RECONCILIATION_API_URI
-)
+class Api(
+    private val client: HttpClient,
+    private val credentials: Credentials,
+    private val endpoints: Endpoints = Endpoints()
+) {
+    suspend fun charge(attributes: Attributes) = makeRequest("charge", attributes)
+    suspend fun recurring(attributes: Attributes) = makeRequest("recurring", attributes)
+    suspend fun status(attributes: Attributes) = makeRequest("status", attributes)
+    suspend fun refund(attributes: Attributes) = makeRequest("refund", attributes)
+    suspend fun initPayment(attributes: Attributes) = makeRequest("initPayment", attributes)
+    suspend fun resign(attributes: Attributes) = makeRequest("resign", attributes)
+    suspend fun auth(attributes: Attributes) = makeRequest("auth", attributes)
+    suspend fun void(attributes: Attributes) = makeRequest("void", attributes)
+    suspend fun settle(attributes: Attributes) = makeRequest("settle", attributes)
+    suspend fun arnCode(attributes: Attributes) = makeRequest("arnCode", attributes)
+    suspend fun applePay(attributes: Attributes) = makeRequest("applePay", attributes)
+    suspend fun googlePay(attributes: Attributes) = makeRequest("googlePay", attributes)
 
-class Api(private val client: HttpClient, private val credentials: Credentials, private val endpoints: Endpoints = Endpoints()) {
+    fun formUrl(attributes: Attributes): Url {
+        val base64Encoded = attributes.encrypt(credentials)
+        val signature = attributes.signature(credentials)
 
-    private suspend fun makeRequest(path: String, attributes: Map<String, Any?>): HttpResponse {
+        return Url(endpoints.baseSolidGateApiUriString + "form?merchant=${credentials.merchantId}&form_data=${base64Encoded}&signature=${signature}")
+    }
 
-        val bodyString = Gson().toJson(attributes)
+    private suspend fun makeRequest(path: String, attributes: Attributes): HttpResponse {
 
         return client.post(Url(endpoints.baseSolidGateApiUriString + path)) {
-            body = bodyString
+            body = attributes.toJson()
             headers.append("Content-Type", "application/json")
             headers.append("Accept", "application/json")
             headers.append("Merchant", credentials.merchantId)
-            headers.append("Signature", generateSignature(bodyString, credentials.merchantId, credentials.privateKey))
+            headers.append("Signature", attributes.signature(credentials))
         }
     }
-
-    suspend fun charge(attributes: Map<String, Any?>) = makeRequest("charge", attributes)
-    suspend fun recurring(attributes: Map<String, Any?>) = makeRequest("recurring", attributes)
-    suspend fun status(attributes: Map<String, Any?>) = makeRequest("status", attributes)
-    suspend fun refund(attributes: Map<String, Any?>) = makeRequest("refund", attributes)
-    suspend fun initPayment(attributes: Map<String, Any?>) = makeRequest("initPayment", attributes)
-    suspend fun resign(attributes: Map<String, Any?>) = makeRequest("resign", attributes)
-    suspend fun auth(attributes: Map<String, Any?>) = makeRequest("auth", attributes)
-    suspend fun void(attributes: Map<String, Any?>) = makeRequest("void", attributes)
-    suspend fun settle(attributes: Map<String, Any?>) = makeRequest("settle", attributes)
-    suspend fun arnCode(attributes: Map<String, Any?>) = makeRequest("arnCode", attributes)
-    suspend fun applePay(attributes: Map<String, Any?>) = makeRequest("applePay", attributes)
-    suspend fun googlePay(attributes: Map<String, Any?>) = makeRequest("googlePay", attributes)
 
     companion object {
         const val BASE_SOLID_GATE_API_URI = "https://pay.solidgate.com/api/v1/"
         const val BASE_RECONCILIATION_API_URI = "https://reports.solidgate.com/"
-
-        private const val HMAC_SHA512 = "HmacSHA512"
-
-        fun generateSignature(bodyString: String, merchantId: String, privateKey: String): String {
-            val text: String = merchantId + bodyString + merchantId
-            val keyBytes: ByteArray = privateKey.toByteArray(Charsets.UTF_8)
-            val sks = SecretKeySpec(keyBytes, HMAC_SHA512)
-            val mac = Mac.getInstance(HMAC_SHA512)
-
-            mac.init(sks)
-
-            val macFinal = mac.doFinal(text.toByteArray(Charsets.UTF_8))
-
-            return Base64.encodeBase64String(Hex.encodeHexString(macFinal).toByteArray(Charsets.UTF_8))
-        }
     }
 }

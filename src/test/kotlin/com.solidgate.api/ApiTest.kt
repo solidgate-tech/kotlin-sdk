@@ -14,7 +14,8 @@ import org.junit.Assert.assertEquals
 @KtorExperimentalAPI
 class ApiTest {
 
-    private val attributes = mapOf("amount" to 100, "currency" to "USD")
+    private val attributes = Attributes(mapOf("amount" to 100, "currency" to "USD"))
+    private val credentials = Credentials("unicorn", "20c20ee3-4173-4daa-87e5-dbcce8c7949d")
 
     private val mockClient = HttpClient(MockEngine) {
         engine {
@@ -28,18 +29,15 @@ class ApiTest {
 
     private val api = Api(
         mockClient,
-        Credentials("test", "secret"),
+        credentials,
         Endpoints("http://localhost/", "http://localhost/")
     )
 
     @Test
     fun testGenerateSignature() {
-        val bodyString = """{"test":"json"}"""
-        val signature = Api.generateSignature(bodyString, "test", "secret")
-
         assertEquals(
-            "MWRmYTk1NmY2ZWVhYzZjMjk4OWNkZTgwMWFiMmRkZDBjNjZhODJkOTY4ZTU1MTViNDRiMTZhM2UxZjUzNzA0NjE3ZWFlZGI1YmM1ODBhMmU2ZjBjNmM4ODViNmM4NzI4OTE1NWI3ODEzOTViMzlhYjFiZGM4MzhiM2NhYmUwYmU=",
-            signature
+            "MjY3MzBjNDAwMDllZjIxMGMzYjQ3Mzg5ZjNiYjE4MmNhOTNkYjliNGIzMzUxNTU2M2E1ZmUzMDVlZGM0MTBkZDE2YzE3ZWVjNDI3MDkxNWFkYzFlYzVjNzc5NDI0M2NmYjZiYTRlZDUxMDlkZDlhYWM1MmUzZTAzYTFlNjIxNGU=",
+            attributes.signature(Credentials("test", "secret"))
         )
     }
 
@@ -63,9 +61,9 @@ class ApiTest {
         val responseBody = String(response.readBytes())
 
         assertEquals("""{"amount":100,"currency":"USD"}""", responseBody)
-        assertEquals("test", response.headers["Merchant"])
+        assertEquals(credentials.merchantId, response.headers["Merchant"])
         assertEquals(
-            "MjY3MzBjNDAwMDllZjIxMGMzYjQ3Mzg5ZjNiYjE4MmNhOTNkYjliNGIzMzUxNTU2M2E1ZmUzMDVlZGM0MTBkZDE2YzE3ZWVjNDI3MDkxNWFkYzFlYzVjNzc5NDI0M2NmYjZiYTRlZDUxMDlkZDlhYWM1MmUzZTAzYTFlNjIxNGU=",
+            "NGJlYmZjMzA2YzgxZWE3ODZkNTYxMGQwNTM3MTc5NDNkYTVlMjMxYmFlNDRjMGI2NDliZjg4ZWNhZmM0MGZmMmQyNDFjMmY3ZjExNjA1M2Q2YzM1OGMzY2RhZWU4YjczMDVhZTA4ODg4OGVjNGI1M2I1ZTJjMGJjNzgwZDE1YmY=",
             response.headers["Signature"]
         )
     }
