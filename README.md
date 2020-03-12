@@ -1,6 +1,8 @@
 # SolidGate API
 
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.solidgate/solidgate-api-sdk/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.solidgate/solidgate-api-sdk)
+
 This library provides basic API options of SolidGate payment gateway.
 
 ## Usage
