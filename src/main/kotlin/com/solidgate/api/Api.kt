@@ -14,14 +14,14 @@ class Api(
     suspend fun recurring(attributes: Attributes) = makeRequest("recurring", attributes)
     suspend fun status(attributes: Attributes) = makeRequest("status", attributes)
     suspend fun refund(attributes: Attributes) = makeRequest("refund", attributes)
-    suspend fun initPayment(attributes: Attributes) = makeRequest("initPayment", attributes)
+    suspend fun initPayment(attributes: Attributes) = makeRequest("init-payment", attributes)
     suspend fun resign(attributes: Attributes) = makeRequest("resign", attributes)
     suspend fun auth(attributes: Attributes) = makeRequest("auth", attributes)
     suspend fun void(attributes: Attributes) = makeRequest("void", attributes)
     suspend fun settle(attributes: Attributes) = makeRequest("settle", attributes)
-    suspend fun arnCode(attributes: Attributes) = makeRequest("arnCode", attributes)
-    suspend fun applePay(attributes: Attributes) = makeRequest("applePay", attributes)
-    suspend fun googlePay(attributes: Attributes) = makeRequest("googlePay", attributes)
+    suspend fun arnCode(attributes: Attributes) = makeRequest("arn-code", attributes)
+    suspend fun applePay(attributes: Attributes) = makeRequest("apple-pay", attributes)
+    suspend fun googlePay(attributes: Attributes) = makeRequest("google-pay", attributes)
 
     fun formUrl(attributes: Attributes): Url {
         val base64Encoded = attributes.encrypt(credentials)
