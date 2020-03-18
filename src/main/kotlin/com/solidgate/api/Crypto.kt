@@ -27,7 +27,13 @@ class Crypto {
             return iv + cipher.doFinal(plaintext)
         }
 
-        fun hmac(data: String, key: String): ByteArray {
+        fun sign(data: String, credentials: Credentials): String {
+            val hmac = hmac(credentials.merchantId + data + credentials.merchantId, credentials.privateKey)
+
+            return base64encode(hmac)
+        }
+
+        private fun hmac(data: String, key: String): ByteArray {
             val sks = SecretKeySpec(key.toByteArray(), HMAC_SHA512)
             val mac = Mac.getInstance(HMAC_SHA512)
 
@@ -36,7 +42,7 @@ class Crypto {
             return mac.doFinal(data.toByteArray())
         }
 
-        fun base64encode(data: ByteArray): String {
+        private fun base64encode(data: ByteArray): String {
             return Base64.getUrlEncoder()
                 .encodeToString(Hex.encodeHexString(data).toByteArray())
         }

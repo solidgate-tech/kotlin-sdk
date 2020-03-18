@@ -25,7 +25,7 @@ class Api(
 
     fun formUrl(attributes: Attributes): Url {
         val base64Encoded = attributes.encrypt(credentials)
-        val signature = attributes.signature(credentials)
+        val signature = Crypto.sign(base64Encoded, credentials)
 
         return Url(endpoints.baseSolidGateApiUriString + "form?merchant=${credentials.merchantId}&form_data=${base64Encoded}&signature=${signature}")
     }
@@ -37,7 +37,7 @@ class Api(
             headers.append("Content-Type", "application/json")
             headers.append("Accept", "application/json")
             headers.append("Merchant", credentials.merchantId)
-            headers.append("Signature", attributes.signature(credentials))
+            headers.append("Signature", Crypto.sign(attributes.toJson(), credentials))
         }
     }
 }

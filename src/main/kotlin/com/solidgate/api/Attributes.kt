@@ -8,13 +8,6 @@ data class Attributes(val attributes: Map<String, Any?>) {
         return Gson().toJson(attributes)
     }
 
-    fun signature(credentials: Credentials): String {
-        val data = credentials.merchantId + this.toJson() + credentials.merchantId
-        val hmac = Crypto.hmac(data, credentials.privateKey)
-
-        return Crypto.base64encode(hmac)
-    }
-
     fun encrypt(credentials: Credentials): String {
         return getUrlEncoder()
             .encodeToString(Crypto.encrypt(this.toJson().toByteArray(), credentials.privateKey))

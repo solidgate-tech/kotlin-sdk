@@ -37,7 +37,7 @@ class ApiTest {
     fun testGenerateSignature() {
         assertEquals(
             "MjY3MzBjNDAwMDllZjIxMGMzYjQ3Mzg5ZjNiYjE4MmNhOTNkYjliNGIzMzUxNTU2M2E1ZmUzMDVlZGM0MTBkZDE2YzE3ZWVjNDI3MDkxNWFkYzFlYzVjNzc5NDI0M2NmYjZiYTRlZDUxMDlkZDlhYWM1MmUzZTAzYTFlNjIxNGU=",
-            attributes.signature(Credentials("test", "secret"))
+            Crypto.sign(attributes.toJson(), Credentials("test", "secret"))
         )
     }
 
