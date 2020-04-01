@@ -30,6 +30,13 @@ class Api(
         return Url(endpoints.baseSolidGateApiUriString + "form?merchant=${credentials.merchantId}&form_data=${base64Encoded}&signature=${signature}")
     }
 
+    fun resignFormUrl(attributes: Attributes): Url {
+        val base64Encoded = attributes.encrypt(credentials)
+        val signature = Crypto.sign(base64Encoded, credentials)
+
+        return Url(endpoints.baseSolidGateApiUriString + "form/resign?merchant=${credentials.merchantId}&form_data=${base64Encoded}&signature=${signature}")
+    }
+
     private suspend fun makeRequest(path: String, attributes: Attributes): HttpResponse {
 
         return client.post(Url(endpoints.baseSolidGateApiUriString + path)) {
