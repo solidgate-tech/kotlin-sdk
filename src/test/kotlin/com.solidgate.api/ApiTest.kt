@@ -47,7 +47,6 @@ class ApiTest {
         checkResponse(api.recurring(attributes))
         checkResponse(api.status(attributes))
         checkResponse(api.refund(attributes))
-        checkResponse(api.initPayment(attributes))
         checkResponse(api.resign(attributes))
         checkResponse(api.auth(attributes))
         checkResponse(api.void(attributes))

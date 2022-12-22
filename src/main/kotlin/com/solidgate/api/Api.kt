@@ -14,7 +14,6 @@ class Api(
     suspend fun recurring(attributes: Attributes) = makeRequest("recurring", attributes)
     suspend fun status(attributes: Attributes) = makeRequest("status", attributes)
     suspend fun refund(attributes: Attributes) = makeRequest("refund", attributes)
-    suspend fun initPayment(attributes: Attributes) = makeRequest("init-payment", attributes)
     suspend fun resign(attributes: Attributes) = makeRequest("resign", attributes)
     suspend fun auth(attributes: Attributes) = makeRequest("auth", attributes)
     suspend fun void(attributes: Attributes) = makeRequest("void", attributes)
