@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.solidgate"
-version = "0.3.0"
+version = "0.4.0"
 
 repositories {
     mavenCentral()
@@ -59,11 +59,11 @@ val sourcesJar by tasks.creating(Jar::class) {
     from(sourceSets.getByName("main").allSource)
 }
 
-val pomUrl = "https://bitbucket.org/solidgate/kotlin-sdk"
-val pomScmUrl = "https://bitbucket.org/solidgate/kotlin-sdk"
+val pomUrl = "https://github.com/solidgate-tech/kotlin-sdk"
+val pomScmUrl = "https://github.com/solidgate-tech/kotlin-sdk"
 val pomDesc = "Kotlin SDK for SolidGate API"
-val pomScmConnection = "scm:git:git://bitbucket.org/solidgate/kotlin-sdk"
-val pomScmDevConnection = "scm:git:git://bitbucket.org/solidgate/kotlin-sdk"
+val pomScmConnection = "scm:git:git://github.com/solidgate-tech/kotlin-sdk"
+val pomScmDevConnection = "scm:git:git://github.com/solidgate-tech/kotlin-sdk"
 
 val pomLicenseName = "The Apache Software License, Version 2.0"
 val pomLicenseUrl = "http://www.apache.org/licenses/LICENSE-2.0.txt"
