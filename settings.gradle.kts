@@ -1,1 +1,1 @@
-rootProject.name = "solidgate-sdk"
+rootProject.name = "solidgate-api-sdk"
