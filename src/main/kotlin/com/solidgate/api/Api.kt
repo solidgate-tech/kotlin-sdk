@@ -43,6 +43,13 @@ class Api(
         return FormUpdateDTO(base64Encoded, signature)
     }
 
+    fun formResign(attributes: Attributes): FormResignDTO {
+        val base64Encoded = attributes.encrypt(credentials)
+        val signature = Crypto.sign(base64Encoded, credentials)
+
+        return FormResignDTO(base64Encoded, credentials.merchantId, signature)
+    }
+
     private suspend fun makeRequest(path: String, attributes: Attributes): HttpResponse {
 
         return client.post(Url(endpoints.baseSolidGateApiUriString + path)) {
