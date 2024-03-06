@@ -1,3 +1,3 @@
 package com.solidgate.api
 
-data class FormResignDTO(val paymentIntent: String, val merchant: String, val signature: String)
+data class FormResignDTO(val resignIntent: String, val merchant: String, val signature: String)
