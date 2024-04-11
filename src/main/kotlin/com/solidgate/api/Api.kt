@@ -22,13 +22,6 @@ class Api(
     suspend fun applePay(attributes: Attributes) = makeRequest("apple-pay", attributes)
     suspend fun googlePay(attributes: Attributes) = makeRequest("google-pay", attributes)
 
-    fun resignFormUrl(attributes: Attributes): Url {
-        val base64Encoded = attributes.encrypt(credentials)
-        val signature = Crypto.sign(base64Encoded, credentials)
-
-        return Url(endpoints.baseSolidGateApiUriString + "form/resign?merchant=${credentials.merchantId}&form_data=${base64Encoded}&signature=${signature}")
-    }
-
     fun formMerchantData(attributes: Attributes): FormInitDTO {
         val base64Encoded = attributes.encrypt(credentials)
         val signature = Crypto.sign(base64Encoded, credentials)
