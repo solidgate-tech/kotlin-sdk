@@ -40,6 +40,8 @@ Check our
 * **Gradle** or **Maven**: as a build tool
 * **Solidgate account**: Merchant ID and secret key (request via <a href="mailto:sales@solidgate.com">sales@solidgate.com</a>)
 
+<br>
+
 ## Installation
 
 To start using the Kotlin SDK:
@@ -82,6 +84,8 @@ To start using the Kotlin SDK:
 
 _Use the provided Dockerfile for running the SDK locally._
 
+<br>
+
 ## Usage
 
 ### Charge a payment
@@ -105,6 +109,8 @@ val attributes = Attributes(mapOf(
 
 val response = api.charge(attributes)
 ```
+
+<br>
 
 ## Errors
 
