@@ -123,3 +123,8 @@ try {
 	println(e.message)
 }
 ```
+
+---
+
+Looking for help? <a href="https://support.solidgate.com/support/tickets/new" target="_blank">Contact us</a> <br>
+Want to contribute? <a href="https://github.com/solidgate-tech/kotlin-sdk/pulls" target="_blank">Submit a pull request</a>
