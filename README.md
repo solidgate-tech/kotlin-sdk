@@ -1,6 +1,6 @@
 # Solidgate API
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.solidgate/solidgate-api-sdk/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.solidgate/solidgate-api-sdk)
+[![MvnRepository](https://badges.mvnrepository.com/badge/com.solidgate/solidgate-api-sdk/badge.svg?label=MvnRepository)](https://mvnrepository.com/artifact/com.solidgate/solidgate-api-sdk)
 
 Kotlin SDK provides API options for integrating Solidgate’s payment orchestrator into your Kotlin applications.
 
