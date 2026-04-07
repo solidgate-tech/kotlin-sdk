@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.solidgate"
-version = "0.5.2"
+version = "0.5.3"
 
 repositories {
     mavenCentral()
@@ -21,8 +21,6 @@ dependencies {
     implementation(group = "commons-codec", name = "commons-codec", version = "1.14")
     implementation(group = "io.ktor", name = "ktor-client-core-jvm", version = ktorVersion)
     implementation(group = "io.ktor", name = "ktor-client-apache", version = ktorVersion)
-    compile(group = "io.ktor", name = "ktor-client-core-jvm", version = ktorVersion)
-    compile(group = "io.ktor", name = "ktor-client-apache", version = ktorVersion)
     testImplementation(group = "junit", name = "junit", version = "4.12")
     testImplementation(group = "io.ktor", name = "ktor-client-core-jvm", version = ktorVersion)
     testImplementation(group= "io.ktor", name = "ktor-client-mock-jvm", version = ktorVersion)

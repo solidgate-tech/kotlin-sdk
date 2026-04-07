@@ -16,7 +16,7 @@ Check our
     <col style="width: 50%;">
   </colgroup>
   <tr>
-    <th>SDK for Python contains</th>
+    <th>SDK for Kotlin contains</th>
     <th>Table of contents</th>
   </tr>
   <tr>
@@ -50,34 +50,21 @@ To start using the Kotlin SDK:
 
    **Maven**
    ```xml
-   <repositories>
-    <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-    </repository>
-    </repositories>
-    
-    <dependency>
-        <groupId>com.github.Solidgate</groupId>
-        <artifactId>solidgate-sdk</artifactId>
-        <version>1.0.0</version>
-    </dependency>
+   <dependency>
+       <groupId>com.solidgate</groupId>
+       <artifactId>solidgate-api-sdk</artifactId>
+       <version>0.5.3</version>
+   </dependency>
    ```
 
-   **Gradle**
+   **Gradle (Kotlin DSL)**
    ```kotlin
-   <repositories>
-    <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-    </repository>
-    </repositories>
-    
-    <dependency>
-        <groupId>com.github.Solidgate</groupId>
-        <artifactId>solidgate-sdk</artifactId>
-        <version>1.0.0</version>
-    </dependency>
+   implementation("com.solidgate:solidgate-api-sdk:0.5.3")
+   ```
+
+   **Gradle (Groovy DSL)**
+   ```groovy
+   implementation 'com.solidgate:solidgate-api-sdk:0.5.3'
    ```
 2. Initialize the SDK with your **public** and **secret key**.
 3. Use test credentials for validation, then transition to production credentials for deployment.
@@ -107,7 +94,7 @@ val attributes = Attributes(mapOf(
     "card_number" to "4111 11XX XXXX 1111"
 ))
 
-val response = api.charge(attributes)
+val response = api.auth(attributes)
 ```
 
 <br>
@@ -118,8 +105,8 @@ Handle <a href="https://docs.solidgate.com/payments/payments-insights/error-code
 
 ```kotlin
 try {
-	val response = api.charge(attributes)
-        } catch (e: Exception) {
+	val response = api.auth(attributes)
+} catch (e: Exception) {
 	println(e.message)
 }
 ```

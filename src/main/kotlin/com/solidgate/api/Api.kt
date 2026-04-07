@@ -3,14 +3,25 @@ package com.solidgate.api
 import io.ktor.client.HttpClient
 import io.ktor.client.request.post
 import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.Url
+import kotlinx.coroutines.delay
 
 class Api(
     private val client: HttpClient,
     private val credentials: Credentials,
     private val endpoints: Endpoints = Endpoints()
 ) {
-    suspend fun charge(attributes: Attributes) = makeRequest("charge", attributes)
+    companion object {
+        const val DEFAULT_RETRY_DELAY = 5000L
+
+        const val MAX_RETRIES = 3
+
+        val RETRYABLE_STATUS_CODES = setOf(
+            HttpStatusCode.TooManyRequests,
+            HttpStatusCode.ServiceUnavailable
+        )
+    }
     suspend fun recurring(attributes: Attributes) = makeRequest("recurring", attributes)
     suspend fun status(attributes: Attributes) = makeRequest("status", attributes)
     suspend fun refund(attributes: Attributes) = makeRequest("refund", attributes)
@@ -44,13 +55,26 @@ class Api(
     }
 
     private suspend fun makeRequest(path: String, attributes: Attributes): HttpResponse {
+        var lastResponse: HttpResponse? = null
 
-        return client.post(Url(endpoints.baseSolidGateApiUriString + path)) {
-            body = attributes.toJson()
-            headers.append("Content-Type", "application/json")
-            headers.append("Accept", "application/json")
-            headers.append("Merchant", credentials.merchantId)
-            headers.append("Signature", Crypto.sign(attributes.toJson(), credentials))
+        for (attempt in 1..MAX_RETRIES) {
+            val response = client.post<HttpResponse>(Url(endpoints.baseSolidGateApiUriString + path)) {
+                body = attributes.toJson()
+                headers.append("Content-Type", "application/json")
+                headers.append("Accept", "application/json")
+                headers.append("Merchant", credentials.merchantId)
+                headers.append("Signature", Crypto.sign(attributes.toJson(), credentials))
+                headers.append("User-Agent", "Kotlin-SDK-0.5.3")
+            }
+
+            if (response.status !in RETRYABLE_STATUS_CODES || attempt == MAX_RETRIES) {
+                return response
+            }
+
+            lastResponse = response
+            delay(DEFAULT_RETRY_DELAY)
         }
+
+        return lastResponse!!
     }
 }
