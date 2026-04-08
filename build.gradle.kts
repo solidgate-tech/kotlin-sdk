@@ -64,6 +64,9 @@ val pomLicenseDist = "repo"
 val pomDeveloperId = "Gaidoba"
 val pomDeveloperName = "Yuri Gaidoba"
 
+val centralPortalUsername: String by project
+val centralPortalPassword: String by project
+
 publishing {
     publications {
         create<MavenPublication>("lib") {
@@ -104,14 +107,11 @@ publishing {
     }
 }
 
-val centralPortalUsername: String by project
-val centralPortalPassword: String by project
-
 nmcp {
     publish("lib") {
         username.set(centralPortalUsername)
         password.set(centralPortalPassword)
-        publicationType.set("AUTOMATIC")
+        publicationType.set("USER_MANAGED")
     }
 }
 
