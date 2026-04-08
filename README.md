@@ -53,18 +53,18 @@ To start using the Kotlin SDK:
    <dependency>
        <groupId>com.solidgate</groupId>
        <artifactId>solidgate-api-sdk</artifactId>
-       <version>0.5.3</version>
+       <version>0.6.0</version>
    </dependency>
    ```
 
    **Gradle (Kotlin DSL)**
    ```kotlin
-   implementation("com.solidgate:solidgate-api-sdk:0.5.3")
+   implementation("com.solidgate:solidgate-api-sdk:0.6.0")
    ```
 
    **Gradle (Groovy DSL)**
    ```groovy
-   implementation 'com.solidgate:solidgate-api-sdk:0.5.3'
+   implementation 'com.solidgate:solidgate-api-sdk:0.6.0'
    ```
 2. Initialize the SDK with your **public** and **secret key**.
 3. Use test credentials for validation, then transition to production credentials for deployment.

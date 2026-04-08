@@ -7,12 +7,10 @@ import io.ktor.client.engine.mock.toByteArray
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.readBytes
 import io.ktor.http.HttpStatusCode
-import io.ktor.util.KtorExperimentalAPI
 import org.junit.*
 import kotlinx.coroutines.*
 import org.junit.Assert.assertEquals
 
-@KtorExperimentalAPI
 class ApiTest {
 
     private val attributes = Attributes(mapOf("amount" to 100, "currency" to "USD"))
@@ -60,6 +58,7 @@ class ApiTest {
     fun testRetryOn429ThenSuccess() = runBlocking {
         var requestCount = 0
         val retryMockClient = HttpClient(MockEngine) {
+            expectSuccess = false
             engine {
                 addHandler { request ->
                     requestCount++
@@ -83,6 +82,7 @@ class ApiTest {
     fun testRetryOn503ThenSuccess() = runBlocking {
         var requestCount = 0
         val retryMockClient = HttpClient(MockEngine) {
+            expectSuccess = false
             engine {
                 addHandler { request ->
                     requestCount++
@@ -106,6 +106,7 @@ class ApiTest {
     fun testRetryExhausted() = runBlocking {
         var requestCount = 0
         val retryMockClient = HttpClient(MockEngine) {
+            expectSuccess = false
             engine {
                 addHandler {
                     requestCount++
@@ -125,6 +126,7 @@ class ApiTest {
     fun testNoRetryOnNonRetryableStatus() = runBlocking {
         var requestCount = 0
         val retryMockClient = HttpClient(MockEngine) {
+            expectSuccess = false
             engine {
                 addHandler {
                     requestCount++
@@ -149,6 +151,6 @@ class ApiTest {
             "NGJlYmZjMzA2YzgxZWE3ODZkNTYxMGQwNTM3MTc5NDNkYTVlMjMxYmFlNDRjMGI2NDliZjg4ZWNhZmM0MGZmMmQyNDFjMmY3ZjExNjA1M2Q2YzM1OGMzY2RhZWU4YjczMDVhZTA4ODg4OGVjNGI1M2I1ZTJjMGJjNzgwZDE1YmY=",
             response.headers["Signature"]
         )
-        assertEquals("Kotlin-SDK-0.5.3", response.headers["User-Agent"])
+        assertEquals("Kotlin-SDK-0.6.0", response.headers["User-Agent"])
     }
 }

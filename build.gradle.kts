@@ -1,18 +1,18 @@
-val ktorVersion = "1.3.0"
+val ktorVersion = "1.6.8"
 
 plugins {
     signing
-    kotlin("jvm") version "1.3.70"
-    id("org.jetbrains.dokka") version "0.9.17"
+    kotlin("jvm") version "1.6.21"
+    id("org.jetbrains.dokka") version "1.6.21"
     `maven-publish`
+    id("com.gradleup.nmcp") version "0.0.9"
 }
 
 group = "com.solidgate"
-version = "0.5.3"
+version = "0.6.0"
 
 repositories {
     mavenCentral()
-    maven { url = uri("https://kotlin.bintray.com/ktor") }
 }
 
 dependencies {
@@ -23,7 +23,7 @@ dependencies {
     implementation(group = "io.ktor", name = "ktor-client-apache", version = ktorVersion)
     testImplementation(group = "junit", name = "junit", version = "4.12")
     testImplementation(group = "io.ktor", name = "ktor-client-core-jvm", version = ktorVersion)
-    testImplementation(group= "io.ktor", name = "ktor-client-mock-jvm", version = ktorVersion)
+    testImplementation(group = "io.ktor", name = "ktor-client-mock-jvm", version = ktorVersion)
 }
 
 tasks {
@@ -33,12 +33,6 @@ tasks {
     compileTestKotlin {
         kotlinOptions.jvmTarget = "1.8"
     }
-    dokka {
-        outputFormat = "html"
-        outputDirectory = "$buildDir/javadoc"
-        moduleName = rootProject.name
-    }
-
     publishToMavenLocal {
         dependsOn(build)
     }
@@ -48,8 +42,8 @@ val dokkaJar by tasks.creating(Jar::class) {
     group = JavaBasePlugin.DOCUMENTATION_GROUP
     description = "Assembles Kotlin docs with Dokka"
     archiveClassifier.set("javadoc")
-    from(tasks.dokka)
-    dependsOn(tasks.dokka)
+    from(tasks.named("dokkaHtml"))
+    dependsOn(tasks.named("dokkaHtml"))
 }
 
 val sourcesJar by tasks.creating(Jar::class) {
@@ -69,9 +63,6 @@ val pomLicenseDist = "repo"
 
 val pomDeveloperId = "Gaidoba"
 val pomDeveloperName = "Yuri Gaidoba"
-
-val ossrhUsername: String by project
-val ossrhPassword: String by project
 
 publishing {
     publications {
@@ -108,14 +99,19 @@ publishing {
     }
     repositories {
         maven {
-            val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2")
-            val snapshotsRepoUrl = uri("https://oss.sonatype.org/content/repositories/snapshots")
-            url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
-            credentials {
-                username = ossrhUsername
-                password = ossrhPassword
-            }
+            url = uri(layout.buildDirectory.dir("staging-deploy"))
         }
+    }
+}
+
+val centralPortalUsername: String by project
+val centralPortalPassword: String by project
+
+nmcp {
+    publish("lib") {
+        username.set(centralPortalUsername)
+        password.set(centralPortalPassword)
+        publicationType.set("AUTOMATIC")
     }
 }
 

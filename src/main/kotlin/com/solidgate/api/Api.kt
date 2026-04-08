@@ -1,6 +1,7 @@
 package com.solidgate.api
 
 import io.ktor.client.HttpClient
+import io.ktor.client.features.ResponseException
 import io.ktor.client.request.post
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
@@ -22,6 +23,7 @@ class Api(
             HttpStatusCode.ServiceUnavailable
         )
     }
+
     suspend fun recurring(attributes: Attributes) = makeRequest("recurring", attributes)
     suspend fun status(attributes: Attributes) = makeRequest("status", attributes)
     suspend fun refund(attributes: Attributes) = makeRequest("refund", attributes)
@@ -58,13 +60,17 @@ class Api(
         var lastResponse: HttpResponse? = null
 
         for (attempt in 1..MAX_RETRIES) {
-            val response = client.post<HttpResponse>(Url(endpoints.baseSolidGateApiUriString + path)) {
-                body = attributes.toJson()
-                headers.append("Content-Type", "application/json")
-                headers.append("Accept", "application/json")
-                headers.append("Merchant", credentials.merchantId)
-                headers.append("Signature", Crypto.sign(attributes.toJson(), credentials))
-                headers.append("User-Agent", "Kotlin-SDK-0.5.3")
+            val response = try {
+                client.post<HttpResponse>(Url(endpoints.baseSolidGateApiUriString + path)) {
+                    body = attributes.toJson()
+                    headers.append("Content-Type", "application/json")
+                    headers.append("Accept", "application/json")
+                    headers.append("Merchant", credentials.merchantId)
+                    headers.append("Signature", Crypto.sign(attributes.toJson(), credentials))
+                    headers.append("User-Agent", "Kotlin-SDK-0.6.0")
+                }
+            } catch (e: ResponseException) {
+                e.response
             }
 
             if (response.status !in RETRYABLE_STATUS_CODES || attempt == MAX_RETRIES) {
